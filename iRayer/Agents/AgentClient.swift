@@ -83,8 +83,9 @@ struct AgentClient {
             let pathAndQuery = url.path(percentEncoded: true) + (queryString.isEmpty ? "" : "?" + queryString)
             let mac = HMAC<SHA256>.authenticationCode(for: Data((time + "\n" + pathAndQuery).utf8),
                                                       using: SymmetricKey(data: Data(key.utf8)))
-            request.setValue(time, forHTTPHeaderField: "X-InPlayer-Time")
-            request.setValue(mac.map { String(format: "%02x", $0) }.joined(), forHTTPHeaderField: "X-InPlayer-Signature")
+            // 바뀜 (2026-11-23, 사용자): 앱 이름을 따라 X-InPlayer-* → X-iRayer-* (서버 MoimzTools Meta 는 둘 다 받는다)
+            request.setValue(time, forHTTPHeaderField: "X-iRayer-Time")
+            request.setValue(mac.map { String(format: "%02x", $0) }.joined(), forHTTPHeaderField: "X-iRayer-Signature")
         }
 
         let (data, response) = try await URLSession.shared.data(for: request)
