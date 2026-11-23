@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- iCloud 동기화 (CloudKit 개인 데이터베이스) -->
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.com.moimz.iRayer</string>
+	</array>
+	<!-- 개발용으로 설치한 앱도 운영 환경 iCloud 를 쓴다 (Developer ID 맥 앱은 운영만 쓸 수 있어 모든 기기를 맞춘다) -->
+	<key>com.apple.developer.icloud-container-environment</key>
+	<string>Production</string>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
+	<!-- 다른 기기에서 바뀐 것을 바로 알려 받는다 (CloudKit 푸시) -->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

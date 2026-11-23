@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- NAS 의 WebDAV 는 대부분 http 라서 평문 HTTP 접속을 허용한다 (개인용 앱) -->
+	<!-- 화면 미러링으로 TV 가 연결되면 폰 화면을 복사하지 않고, 앱이 만든 TV 전용 화면(영상·자막만)을 보여준다 -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleExternalDisplayNonInteractive</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>TV</string>
+					<key>UISceneDelegateClassName</key>
+					<string>ExternalSceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	<!-- 자막 글꼴 (네이버 나눔글꼴, SIL OFL 1.1 — 라이선스는 Fonts/Nanum-OFL.txt) -->
+	<key>UIAppFonts</key>
+	<array>
+		<string>NanumGothic.otf</string>
+		<string>NanumBarunGothic.otf</string>
+		<string>NanumMyeongjo.otf</string>
+		<string>NanumBarunpenR.otf</string>
+		<!-- 마루부리 (네이버, SIL OFL 1.1 — Fonts/MaruBuri-OFL.txt): 텍스트 뷰어용, 굵게 테마는 SemiBold -->
+		<string>MaruBuri-Regular.otf</string>
+		<string>MaruBuri-SemiBold.otf</string>
+	</array>
+	<!-- 화면을 끄거나 다른 앱으로 가도 영상 소리는 계속 (잠금 화면·제어 센터에서 조작) -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

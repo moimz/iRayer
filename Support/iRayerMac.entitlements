@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- 키체인 그룹: 첫째가 이 앱 것. 둘째(inPlayer)는 맥 첫 빌드에서 옛 비밀번호를 옮겨 오는 동안만 (LegacyMigration, 둘째 빌드에서 뺀다) -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.moimz.iRayer</string>
+		<string>$(AppIdentifierPrefix)com.moimz.inPlayer</string>
+	</array>
+	<!-- iCloud 동기화 (아이폰·아이패드와 같은 CloudKit 저장소). 샌드박스는 쓰지 않는다 (Developer ID 직접 배포) -->
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.com.moimz.iRayer</string>
+	</array>
+	<!-- 개발용으로 설치한 앱도 운영 환경 iCloud 를 쓴다 (Developer ID 맥 앱은 운영만 쓸 수 있어 모든 기기를 맞춘다) -->
+	<key>com.apple.developer.icloud-container-environment</key>
+	<string>Production</string>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
+	<!-- 다른 기기에서 바뀐 것을 바로 알려 받는다 (CloudKit 푸시, Developer ID 는 운영 APNs) -->
+	<key>com.apple.developer.aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

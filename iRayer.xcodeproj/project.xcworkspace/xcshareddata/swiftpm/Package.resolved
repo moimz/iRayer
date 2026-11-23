@@ -1,0 +1,24 @@
+{
+  "originHash" : "02ec14de2a142fa1c00f277395bb2ce0b5be06d0775428fd27db3fa6bb244388",
+  "pins" : [
+    {
+      "identity" : "amsmb2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amosavian/AMSMB2.git",
+      "state" : {
+        "revision" : "1726aaaf7adf63d7d1d2a0c5d1b0e635028215c0",
+        "version" : "4.0.3"
+      }
+    },
+    {
+      "identity" : "unrar.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mtgto/Unrar.swift",
+      "state" : {
+        "revision" : "7216007a38ac122dbdeae26cfdaf7f10775c868f",
+        "version" : "0.5.4"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- 내 영화: Apple TV 에서 구입한 영화 목록을 맥의 미디어 보관함에서 읽는다 -->
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Apple TV 에서 구입한 영화를 영화 라이브러리에 함께 보여 줍니다 (라이브러리 설정에서 "Apple TV 구입작 포함"을 켠 경우).</string>
+	<!-- NAS 의 WebDAV 는 대부분 http 라서 평문 HTTP 접속을 허용한다 (개인용 앱, 아이폰과 같다) -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<!-- 자막 파일 형식 (2026-11-08, 사용자): 맥이 smi·srt·ass·ssa 를 몰라 Finder 에서 알 수 없는 파일로 보이고,
+	     이름 바꾸기에서 확장자까지 같이 골라졌다. 앱이 형식을 알려 주면 확장자를 빼고 이름만 고른다 (텍스트라 훑어보기도 됨) -->
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.microsoft.sami</string>
+			<key>UTTypeDescription</key>
+			<string>SAMI 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>smi</string>
+					<string>sami</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.matroska.subrip</string>
+			<key>UTTypeDescription</key>
+			<string>SubRip 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>srt</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.irayer.ssa</string>
+			<key>UTTypeDescription</key>
+			<string>SubStation Alpha 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ass</string>
+					<string>ssa</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
