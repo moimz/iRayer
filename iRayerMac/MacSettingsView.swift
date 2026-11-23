@@ -84,6 +84,8 @@ private struct GeneralSettings: View {
                 }
             }
             AdultFilterSection(asking: $askingPIN)
+            // 자동 업데이트 (Sparkle, 1.0 부터): 버전 · 업데이트 확인 · 자동 확인
+            UpdateSection()
             Section {
             } footer: {
                 Text(versionText)

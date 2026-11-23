@@ -30,6 +30,7 @@ struct AboutView: View {
                     item("VLCKit · MobileVLCKit (LGPL 2.1)", "영상 재생", "https://code.videolan.org/videolan/VLCKit")
                     #if os(macOS)
                     item("FFmpeg (LGPL 2.1)", "웹에서 받은 영상 조각 묶기", "https://ffmpeg.org")
+                    item("Sparkle (MIT)", "자동 업데이트", "https://sparkle-project.org")
                     #endif
                     item("AMSMB2 · libsmb2 (LGPL 2.1)", "SMB 공유 폴더 접속", "https://github.com/amosavian/AMSMB2")
                     item("Unrar.swift (MIT) · UnRAR (UnRAR 라이선스)", "RAR 만화 압축 풀기", "https://github.com/mtgto/Unrar.swift")
@@ -109,8 +110,15 @@ struct LicenseText: Identifiable {
     let file: String
     var id: String { file }
 
-    static let all: [LicenseText] = [
-        .init(title: "LGPL 2.1", file: "LGPL-2.1"),
+    static let all: [LicenseText] = {
+        var texts: [LicenseText] = [.init(title: "LGPL 2.1", file: "LGPL-2.1")]
+        #if os(macOS)
+        texts.append(.init(title: "Sparkle (MIT)", file: "Sparkle-MIT"))
+        #endif
+        return texts + rest
+    }()
+
+    private static let rest: [LicenseText] = [
         .init(title: "UnRAR", file: "UnRAR-License"),
         .init(title: "Unrar.swift (MIT)", file: "Unrar.swift-MIT"),
         .init(title: "나눔글꼴 (OFL)", file: "Nanum-OFL"),

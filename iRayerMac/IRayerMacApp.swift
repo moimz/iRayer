@@ -29,7 +29,11 @@ struct IRayerMacApp: App {
         .commands {
             MacCommands()
             // iRayer에 관하여: 기본 정보 창 대신 직접 만든 창 (AboutView, 2026-11-23 사용자: iSQL 처럼)
-            CommandGroup(replacing: .appInfo) { AboutMenuButton() }
+            CommandGroup(replacing: .appInfo) {
+                AboutMenuButton()
+                // 자동 업데이트 (Sparkle, 1.0 부터)
+                UpdateMenuButton()
+            }
         }
 
         // iRayer 정보 창: 오픈 소스·TMDB 고지
@@ -54,6 +58,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         AppSettings.shared.applyAppearance()
         // 받는 중이면 Dock 아이콘에 개수·진행률 (2026-11-15, 사용자)
         DockProgress.shared.start()
+        // 자동 업데이트: 하루 한 번 새 버전 확인 (Sparkle, 1.0 부터)
+        _ = Updater.shared
         // 맥은 iCloud 의 바뀜 알림이 띄엄띄엄 와서, 앱이 앞에 있는 동안 30초마다 직접 확인한다
         pollTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
             guard NSApp.isActive else { return }

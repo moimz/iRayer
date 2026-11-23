@@ -15,6 +15,7 @@
 		A10000000000000000000112 /* VLCKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000000000000000000110 /* VLCKit.xcframework */; };
 		A10000000000000000000113 /* VLCKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A10000000000000000000110 /* VLCKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A10000000000000000000120 /* AMSMB2 in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000121 /* AMSMB2 */; };
+		A10000000000000000000150 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000151 /* Sparkle */; };
 		A10000000000000000000123 /* AMSMB2 in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000121 /* AMSMB2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A10000000000000000000130 /* Unrar in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000131 /* Unrar */; };
 		A10000000000000000000141 /* ffmpeg in Embed Helpers */ = {isa = PBXBuildFile; fileRef = A10000000000000000000140 /* ffmpeg */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -118,6 +119,7 @@
 				A10000000000000000000112 /* VLCKit.xcframework in Frameworks */,
 				A10000000000000000000120 /* AMSMB2 in Frameworks */,
 				A10000000000000000000130 /* Unrar in Frameworks */,
+				A10000000000000000000150 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +194,7 @@
 				A10000000000000000000114 /* Embed Frameworks */,
 				A10000000000000000000142 /* Embed Helpers */,
 				A10000000000000000000199 /* Stamp Build Number */,
+				A10000000000000000000153 /* Thin Sparkle */,
 			);
 			buildRules = (
 			);
@@ -205,6 +208,7 @@
 			packageProductDependencies = (
 				A10000000000000000000121 /* AMSMB2 */,
 				A10000000000000000000131 /* Unrar */,
+				A10000000000000000000151 /* Sparkle */,
 			);
 			productName = iRayerMac;
 			productReference = A10000000000000000000101 /* iRayer.app */;
@@ -240,6 +244,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A10000000000000000000022 /* XCRemoteSwiftPackageReference "AMSMB2" */,
+				A10000000000000000000152 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				A10000000000000000000032 /* XCRemoteSwiftPackageReference "Unrar.swift" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -311,6 +316,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$SRCROOT/Scripts/stamp-build-number.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A10000000000000000000153 /* Thin Sparkle */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Thin Sparkle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$SRCROOT/Scripts/thin-sparkle.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -574,6 +599,14 @@
 				version = 0.5.4;
 			};
 		};
+		A10000000000000000000152 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.10.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -596,6 +629,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A10000000000000000000032 /* XCRemoteSwiftPackageReference "Unrar.swift" */;
 			productName = Unrar;
+		};
+		A10000000000000000000151 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000000152 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

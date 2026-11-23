@@ -7,6 +7,7 @@ iRayer 의 코드는 [MIT 라이선스](LICENSE)입니다. 앱에는 아래 라�
 |---|---|---|---|
 | VLCKit 3.7.3 (맥) · MobileVLCKit 3.7.3 (아이폰·아이패드) — VideoLAN | LGPL 2.1 이상 | 영상 재생 | https://code.videolan.org/videolan/VLCKit |
 | FFmpeg 8.0 (맥) | LGPL 2.1 이상 | 웹에서 받은 영상 조각 묶기 | https://ffmpeg.org — 빌드 설정: [Scripts/build-ffmpeg.sh](Scripts/build-ffmpeg.sh) |
+| Sparkle 2.10.1 (맥) | MIT | 자동 업데이트 | https://sparkle-project.org |
 | AMSMB2 4.0.3 · libsmb2 | LGPL 2.1 | SMB(윈도우 공유 폴더) 접속 | https://github.com/amosavian/AMSMB2 |
 | Unrar.swift 0.5.4 | MIT | RAR 만화 압축 풀기 | https://github.com/mtgto/Unrar.swift |
 | UnRAR — Alexander Roshal | UnRAR 라이선스 | 〃 | https://www.rarlab.com/rar_add.htm |
