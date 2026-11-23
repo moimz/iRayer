@@ -7,8 +7,6 @@ struct IRayerMacApp: App {
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
 
     init() {
-        // inPlayer → iRayer 옮기기 (맥 첫 빌드에서만, 다른 무엇보다 먼저: DB·설정·키체인을 쓰기 전에)
-        LegacyMigration.runIfNeeded()
         // 자막 글꼴(나눔): 아이폰은 Info.plist 의 UIAppFonts, 맥은 실행할 때 이 앱에서만 쓰게 등록한다 (VLC 가 그리는 자막도 이 이름으로 찾는다)
         if let urls = Bundle.main.urls(forResourcesWithExtension: "otf", subdirectory: nil), !urls.isEmpty {
             CTFontManagerRegisterFontURLs(urls as CFArray, .process, true, nil)

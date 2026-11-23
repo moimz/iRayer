@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- 키체인 그룹: 첫째가 이 앱 것. 둘째(inPlayer)는 맥 첫 빌드에서 옛 비밀번호를 옮겨 오는 동안만 (LegacyMigration, 둘째 빌드에서 뺀다) -->
-	<key>keychain-access-groups</key>
-	<array>
-		<string>$(AppIdentifierPrefix)com.moimz.iRayer</string>
-		<string>$(AppIdentifierPrefix)com.moimz.inPlayer</string>
-	</array>
 	<!-- iCloud 동기화 (아이폰·아이패드와 같은 CloudKit 저장소). 샌드박스는 쓰지 않는다 (Developer ID 직접 배포) -->
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
