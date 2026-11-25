@@ -31,6 +31,7 @@
 - **웹 탐색**: 탭, 즐겨찾기, 광고 차단(내가 쓴 규칙), 사이트별 브라우저 흉내(내가 쓴 규칙)
   - 페이지의 영상(HLS·DASH)을 찾아 받기, 받기 단추로 안 되는 플레이어는 재생되는 그대로 받기. DRM 이 걸린 영상은 받지 않습니다
   - 받는 중이면 Dock 아이콘에 개수·진행률
+- **Finder 미리보기**: MKV·AVI·WMV 등도 Finder 썸네일·스페이스바 미리보기·QuickTime 으로 (QuickLook Video 의 확장을 넣음, 시스템 설정에서 켬)
 - 자동 업데이트 (Sparkle)
 
 **아이폰·아이패드 ↔ 맥**
@@ -61,6 +62,8 @@ Scripts/fetch-vlckit.sh      # 아이폰·아이패드: MobileVLCKit 3.7.3 → V
 Scripts/build-ffmpeg.sh      # 맥: 최소 구성 FFmpeg 8.0 (LGPL) → Vendor/mac/ffmpeg/ffmpeg
 ```
 
+맥 Finder 미리보기는 `Scripts/fetch-qlvideo.sh` 로 QuickLook Video 공식 배포판에서 확장을 꺼내 `Vendor/mac/QLVideo` 에 둡니다.
+
 맥용 VLCKit 3.7.3 은 VideoLAN 배포판(`download.videolan.org/pub/cocoapods/prod/`)을 받아 `Vendor/mac/VLCKit.xcframework` 에 둡니다. 맥 앱은 Apple 실리콘 전용이라 `lipo` 로 arm64 만 남겨 씁니다.
 
 서명은 Xcode 자동 서명을 쓰며, 팀 ID·번들 ID·iCloud 저장소 이름은 자기 것으로 바꿔야 합니다. 맥 앱은 Developer ID 로 내보내 쓰는 것을 전제로 합니다(일부 WebKit 기능 때문에 Mac App Store 용이 아님).
@@ -78,6 +81,7 @@ Scripts/build-ffmpeg.sh      # 맥: 최소 구성 FFmpeg 8.0 (LGPL) → Vendor/m
 | [AMSMB2](https://github.com/amosavian/AMSMB2) · libsmb2 | LGPL 2.1 |
 | [Unrar.swift](https://github.com/mtgto/Unrar.swift) · UnRAR | MIT · UnRAR 라이선스 |
 | [Sparkle](https://github.com/sparkle-project/Sparkle) (맥 자동 업데이트) | MIT |
+| [QuickLook Video](https://github.com/Marginal/QuickLookVideo) (맥 Finder 미리보기, 별개 프로그램으로 넣음) | GPL 2.0 이상 |
 | 나눔글꼴 · 마루부리 (네이버) | SIL OFL 1.1 |
 
 자세한 고지는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 와 앱의 "iRayer에 관하여" 에 있습니다.

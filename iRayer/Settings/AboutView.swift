@@ -31,12 +31,17 @@ struct AboutView: View {
                     #if os(macOS)
                     item("FFmpeg (LGPL 2.1)", "웹에서 받은 영상 조각 묶기", "https://ffmpeg.org")
                     item("Sparkle (MIT)", "자동 업데이트", "https://sparkle-project.org")
+                    // 바뀜 (2026-11-25, 사용자: QuickLook Video 흡수): Finder 미리보기 확장
+                    item("QuickLook Video (GPL 2.0 이상)", "Finder 미리보기 확장, Jonathan Harris", "https://github.com/Marginal/QuickLookVideo")
                     #endif
                     item("AMSMB2 · libsmb2 (LGPL 2.1)", "SMB 공유 폴더 접속", "https://github.com/amosavian/AMSMB2")
                     item("Unrar.swift (MIT) · UnRAR (UnRAR 라이선스)", "RAR 만화 압축 풀기", "https://github.com/mtgto/Unrar.swift")
                     item("나눔글꼴 · 마루부리 (SIL OFL 1.1)", "자막·텍스트 뷰어 글꼴, 네이버", "https://hangeul.naver.com")
                     Text("LGPL 라이브러리는 앱 안에 따로 된 프레임워크·실행 파일로 들어 있어 바꿔 넣을 수 있고, 소스는 각 주소에서 받을 수 있습니다. iRayer 코드는 MIT 라이선스입니다.")
                         .padding(.top, 2)
+                    #if os(macOS)
+                    Text("QuickLook Video 의 확장(Contents/Extensions·Library/Spotlight)과 FFmpeg 라이브러리는 공식 배포판을 그대로 넣은 별개 프로그램으로, GPL 을 따르며 소스는 위 주소에서 받을 수 있습니다.")
+                    #endif
                 }
                 section("라이선스 전문") {
                     FlowButtons(texts: LicenseText.all) { license = $0 }
@@ -114,6 +119,7 @@ struct LicenseText: Identifiable {
         var texts: [LicenseText] = [.init(title: "LGPL 2.1", file: "LGPL-2.1")]
         #if os(macOS)
         texts.append(.init(title: "Sparkle (MIT)", file: "Sparkle-MIT"))
+        texts.append(.init(title: "GPL 2.0", file: "GPL-2.0"))
         #endif
         return texts + rest
     }()

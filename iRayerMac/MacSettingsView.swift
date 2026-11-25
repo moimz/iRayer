@@ -84,6 +84,8 @@ private struct GeneralSettings: View {
                 }
             }
             AdultFilterSection(asking: $askingPIN)
+            // Finder 미리보기 (1.2~): 앱에 넣은 QuickLook Video 확장의 켜짐 상태 · 시스템 설정 열기
+            FinderPreviewSection()
             // 자동 업데이트 (Sparkle, 1.0 부터): 버전 · 업데이트 확인 · 자동 확인
             UpdateSection()
             Section {

@@ -19,7 +19,26 @@
 		A10000000000000000000123 /* AMSMB2 in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000121 /* AMSMB2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A10000000000000000000130 /* Unrar in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000131 /* Unrar */; };
 		A10000000000000000000141 /* ffmpeg in Embed Helpers */ = {isa = PBXBuildFile; fileRef = A10000000000000000000140 /* ffmpeg */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A10000000000000000000308 /* QLVideo Formats.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000301 /* QLVideo Formats.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000318 /* QLVideo Codecs.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000311 /* QLVideo Codecs.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000306 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1000000000000000000000A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000300;
+			remoteInfo = QLVideoFormats;
+		};
+		A10000000000000000000316 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1000000000000000000000A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000310;
+			remoteInfo = QLVideoCodecs;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		A10000000000000000000014 /* Embed Frameworks */ = {
@@ -57,6 +76,18 @@
 			name = "Embed Helpers";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10000000000000000000320 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				A10000000000000000000308 /* QLVideo Formats.appex in Embed ExtensionKit Extensions */,
+				A10000000000000000000318 /* QLVideo Codecs.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +96,8 @@
 		A10000000000000000000110 /* VLCKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = mac/VLCKit.xcframework; sourceTree = "<group>"; };
 		A10000000000000000000140 /* ffmpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mac/ffmpeg/ffmpeg; sourceTree = "<group>"; };
 		A10000000000000000000010 /* MobileVLCKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = MobileVLCKit.xcframework; sourceTree = "<group>"; };
+		A10000000000000000000301 /* QLVideo Formats.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "QLVideo Formats.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000311 /* QLVideo Codecs.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "QLVideo Codecs.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -151,6 +184,8 @@
 			children = (
 				A10000000000000000000001 /* iRayer.app */,
 				A10000000000000000000101 /* iRayer.app */,
+				A10000000000000000000301 /* QLVideo Formats.appex */,
+				A10000000000000000000311 /* QLVideo Codecs.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -193,12 +228,16 @@
 				A10000000000000000000109 /* Resources */,
 				A10000000000000000000114 /* Embed Frameworks */,
 				A10000000000000000000142 /* Embed Helpers */,
+				A10000000000000000000320 /* Embed ExtensionKit Extensions */,
 				A10000000000000000000199 /* Stamp Build Number */,
 				A10000000000000000000153 /* Thin Sparkle */,
+				A10000000000000000000321 /* Embed QLVideo */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A10000000000000000000307 /* PBXTargetDependency */,
+				A10000000000000000000317 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A10000000000000000000002 /* iRayer */,
@@ -213,6 +252,36 @@
 			productName = iRayerMac;
 			productReference = A10000000000000000000101 /* iRayer.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A10000000000000000000300 /* QLVideoFormats */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000302 /* Build configuration list for PBXNativeTarget "QLVideoFormats" */;
+			buildPhases = (
+				A10000000000000000000305 /* Copy QLVideo */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QLVideoFormats;
+			productName = QLVideoFormats;
+			productReference = A10000000000000000000301 /* QLVideo Formats.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		A10000000000000000000310 /* QLVideoCodecs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000312 /* Build configuration list for PBXNativeTarget "QLVideoCodecs" */;
+			buildPhases = (
+				A10000000000000000000315 /* Copy QLVideo */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QLVideoCodecs;
+			productName = QLVideoCodecs;
+			productReference = A10000000000000000000311 /* QLVideo Codecs.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -254,6 +323,8 @@
 			targets = (
 				A10000000000000000000006 /* iRayer */,
 				A10000000000000000000106 /* iRayerMac */,
+				A10000000000000000000300 /* QLVideoFormats */,
+				A10000000000000000000310 /* QLVideoCodecs */,
 			);
 		};
 /* End PBXProject section */
@@ -338,6 +409,66 @@
 			shellScript = "sh \"$SRCROOT/Scripts/thin-sparkle.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		A10000000000000000000305 /* Copy QLVideo */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy QLVideo";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$SRCROOT/Scripts/embed-qlvideo.sh\" Formats\n";
+			showEnvVarsInLog = 0;
+		};
+		A10000000000000000000315 /* Copy QLVideo */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy QLVideo";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$SRCROOT/Scripts/embed-qlvideo.sh\" Codecs\n";
+			showEnvVarsInLog = 0;
+		};
+		A10000000000000000000321 /* Embed QLVideo */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed QLVideo";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$SRCROOT/Scripts/embed-qlvideo.sh\" app\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -356,6 +487,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000000000000000000307 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000300 /* QLVideoFormats */;
+			targetProxy = A10000000000000000000306 /* PBXContainerItemProxy */;
+		};
+		A10000000000000000000317 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000310 /* QLVideoCodecs */;
+			targetProxy = A10000000000000000000316 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A1000000000000000000000C /* Debug */ = {
@@ -424,7 +568,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -465,7 +609,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -500,7 +644,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "같은 네트워크에 있는 NAS·미디어 서버의 영상을 재생하려면 로컬 네트워크 접근이 필요합니다.";
 				PRODUCT_MODULE_NAME = iRayerMac;
@@ -535,7 +679,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "같은 네트워크에 있는 NAS·미디어 서버의 영상을 재생하려면 로컬 네트워크 접근이 필요합니다.";
 				PRODUCT_MODULE_NAME = iRayerMac;
@@ -547,6 +691,90 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A10000000000000000000303 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = arm64;
+				CODE_SIGN_ENTITLEMENTS = QLVideo/Formats.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Vendor/mac/QLVideo/Formats/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.formatreader;
+				PRODUCT_NAME = "QLVideo Formats";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		A10000000000000000000304 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = arm64;
+				CODE_SIGN_ENTITLEMENTS = QLVideo/Formats.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Vendor/mac/QLVideo/Formats/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.formatreader;
+				PRODUCT_NAME = "QLVideo Formats";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Release;
+		};
+		A10000000000000000000313 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = arm64;
+				CODE_SIGN_ENTITLEMENTS = QLVideo/Codecs.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Vendor/mac/QLVideo/Codecs/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.videodecoder;
+				PRODUCT_NAME = "QLVideo Codecs";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		A10000000000000000000314 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = arm64;
+				CODE_SIGN_ENTITLEMENTS = QLVideo/Codecs.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Vendor/mac/QLVideo/Codecs/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.videodecoder;
+				PRODUCT_NAME = "QLVideo Codecs";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Release;
 		};
@@ -576,6 +804,24 @@
 			buildConfigurations = (
 				A1000000000000000000010E /* Debug */,
 				A1000000000000000000010F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000302 /* Build configuration list for PBXNativeTarget "QLVideoFormats" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000303 /* Debug */,
+				A10000000000000000000304 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000312 /* Build configuration list for PBXNativeTarget "QLVideoCodecs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000313 /* Debug */,
+				A10000000000000000000314 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
