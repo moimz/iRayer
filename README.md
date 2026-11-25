@@ -34,6 +34,14 @@
 - **Finder 미리보기**: MKV·AVI·WMV 등도 Finder 썸네일·스페이스바 미리보기·QuickTime 으로 (QuickLook Video 의 확장을 넣음, 시스템 설정에서 켬)
 - 자동 업데이트 (Sparkle)
 
+**아이폰·아이패드**
+- **파일 앱 썸네일**: MKV·AVI·WMV·WebM 등도 파일 앱에서 썸네일이 보입니다 (썸네일 확장, FFmpeg 로 한 장면). 앱을 한 번 열면 켜집니다
+- **파일 앱에서 iRayer 로 열기**: MP4·AVI·MPEG·MKV·WMV·TS 를 파일 앱(나의 iPhone·iCloud Drive·다른 앱의 파일 제공 위치)에서 바로 iRayer 로 재생. 복사하지 않고 원래 자리에서 엽니다
+  - 라이브러리·추가한 폴더 밖의 파일은 재생만 하고 재생 위치·이어보기를 남기지 않습니다
+  - 넘겨받은 파일을 읽을 수 없으면 이유를 알려 줍니다
+  - 한글 이름 파일: 파일 앱은 다른 앱에 넘길 때 경로를 자모 분리(NFD)로 만들어서, 기기에 완성형(NFC) 이름으로 저장된 파일은 iOS 가 넘겨주지 않습니다. 파일 제공 앱이 이름을 NFD 로 주면 열립니다. 안 열리면 iRayer 에 그 폴더를 추가해서 여세요
+- MKV·SMI·SRT·ASS·M2TS 같은 형식을 iOS 에 알려 줘서 파일 앱에서 종류가 바르게 보입니다 (맥도 같음)
+
 **아이폰·아이패드 ↔ 맥**
 - 폰에서 맥의 웹 탐색을 열어 영상을 찾고 맥에 받게 하기, 맥에서 받는 현황 보기
 
@@ -60,6 +68,7 @@ Xcode 26 이상. 대상은 `iRayer`(아이폰·아이패드)와 `iRayerMac`(맥)
 ```bash
 Scripts/fetch-vlckit.sh      # 아이폰·아이패드: MobileVLCKit 3.7.3 → Vendor/MobileVLCKit.xcframework
 Scripts/build-ffmpeg.sh      # 맥: 최소 구성 FFmpeg 8.0 (LGPL) → Vendor/mac/ffmpeg/ffmpeg
+Scripts/build-ffmpeg-ios.sh  # 아이폰·아이패드 썸네일 확장: 최소 구성 FFmpeg 8.0 (LGPL) → Vendor/FFmpeg.xcframework
 ```
 
 맥 Finder 미리보기는 `Scripts/fetch-qlvideo.sh` 로 QuickLook Video 공식 배포판에서 확장을 꺼내 `Vendor/mac/QLVideo` 에 둡니다.
@@ -77,7 +86,7 @@ Scripts/build-ffmpeg.sh      # 맥: 최소 구성 FFmpeg 8.0 (LGPL) → Vendor/m
 | 이름 | 라이선스 |
 |---|---|
 | [VLCKit · MobileVLCKit](https://code.videolan.org/videolan/VLCKit) 3.7.3 | LGPL 2.1 |
-| [FFmpeg](https://ffmpeg.org) 8.0 (맥) | LGPL 2.1 |
+| [FFmpeg](https://ffmpeg.org) 8.0 (맥 · 아이폰·아이패드 썸네일 확장) | LGPL 2.1 |
 | [AMSMB2](https://github.com/amosavian/AMSMB2) · libsmb2 | LGPL 2.1 |
 | [Unrar.swift](https://github.com/mtgto/Unrar.swift) · UnRAR | MIT · UnRAR 라이선스 |
 | [Sparkle](https://github.com/sparkle-project/Sparkle) (맥 자동 업데이트) | MIT |
