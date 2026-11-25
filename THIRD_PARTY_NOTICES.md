@@ -7,6 +7,7 @@ iRayer 의 코드는 [MIT 라이선스](LICENSE)입니다. 앱에는 아래 라�
 |---|---|---|---|
 | VLCKit 3.7.3 (맥) · MobileVLCKit 3.7.3 (아이폰·아이패드) — VideoLAN | LGPL 2.1 이상 | 영상 재생 | https://code.videolan.org/videolan/VLCKit |
 | FFmpeg 8.0 (맥) | LGPL 2.1 이상 | 웹에서 받은 영상 조각 묶기 | https://ffmpeg.org — 빌드 설정: [Scripts/build-ffmpeg.sh](Scripts/build-ffmpeg.sh) |
+| FFmpeg 8.0 (아이폰·아이패드) | LGPL 2.1 이상 | 파일 앱 썸네일 (썸네일 확장) | https://ffmpeg.org — 빌드 설정: [Scripts/build-ffmpeg-ios.sh](Scripts/build-ffmpeg-ios.sh) |
 | Sparkle 2.10.1 (맥) | MIT | 자동 업데이트 | https://sparkle-project.org |
 | QuickLook Video 3.13 (맥) — Jonathan Harris | GPL 2.0 이상 | Finder 썸네일·미리보기, Spotlight 정보 (미디어 확장 2개·Spotlight 플러그인, 그 안의 FFmpeg·dav1d·zimg 라이브러리) | https://github.com/Marginal/QuickLookVideo (태그 `rel-313`) |
 | AMSMB2 4.0.3 · libsmb2 | LGPL 2.1 | SMB(윈도우 공유 폴더) 접속 | https://github.com/amosavian/AMSMB2 |
@@ -19,6 +20,7 @@ iRayer 의 코드는 [MIT 라이선스](LICENSE)입니다. 앱에는 아래 라�
 
 - VLCKit·MobileVLCKit·AMSMB2 는 앱 안에 따로 된 동적 프레임워크(`Frameworks/*.framework`)로 들어 있어, 같은 이름의 다른 빌드로 바꿔 넣을 수 있습니다.
 - FFmpeg 는 따로 된 실행 파일(`Contents/Helpers/ffmpeg`)로 들어 있고, GPL·nonfree 부분 없이(`--enable-gpl` 없음) 빌드했습니다. 위 스크립트로 같은 것을 다시 만들 수 있습니다.
+- 아이폰·아이패드 썸네일 확장(`PlugIns/iRayerThumbnail.appex`)의 FFmpeg 는 정적 라이브러리로 확장에 링크되어 있습니다. 디코더·디먹서·swscale 만 켠 LGPL 구성이고, iRayer 소스가 모두 공개되어 있으므로 다른 FFmpeg 빌드로 다시 링크할 수 있습니다 (`Scripts/build-ffmpeg-ios.sh`).
 - 각 라이브러리의 소스는 위 주소에서 받을 수 있습니다. 앱에 넣은 바이너리는 손대지 않은 공식 배포판(VLCKit) 또는 공식 소스로 빌드한 것입니다.
 
 ## GPL 프로그램 (맥)

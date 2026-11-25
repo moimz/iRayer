@@ -43,5 +43,254 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<!-- 1.2~: 썸네일 확장(iRayerThumbnail)이 맡을 영상 형식 이름. iOS 에 정의가 없는 것을 들여온다 (시스템에 있으면 시스템 것이 쓰인다) -->
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.matroska.mkv</string>
+			<key>UTTypeDescription</key>
+			<string>Matroska 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mkv</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.webmproject.webm</string>
+			<key>UTTypeDescription</key>
+			<string>WebM 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>webm</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.microsoft.windows-media-wmv</string>
+			<key>UTTypeDescription</key>
+			<string>Windows Media 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>wmv</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.microsoft.advanced-systems-format</string>
+			<key>UTTypeDescription</key>
+			<string>ASF 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>asf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.flash.video</string>
+			<key>UTTypeDescription</key>
+			<string>Flash 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>flv</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.real.realmedia</string>
+			<key>UTTypeDescription</key>
+			<string>RealMedia 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rm</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.real.realmedia-vbr</string>
+			<key>UTTypeDescription</key>
+			<string>RealMedia VBR 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rmvb</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.xiph.ogv</string>
+			<key>UTTypeDescription</key>
+			<string>Ogg 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ogv</string>
+				</array>
+			</dict>
+		</dict>
+		<!-- 바뀜 (2026-11-25, 사용자: 아이폰·맥이 같은 형식을 알게): 아래는 맥(InfoMac.plist)과 같은 목록으로 맞춘 것 -->
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>public.avchd-mpeg-2-transport-stream</string>
+			<key>UTTypeDescription</key>
+			<string>AVCHD 영상</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>m2ts</string>
+					<string>mts</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.microsoft.sami</string>
+			<key>UTTypeDescription</key>
+			<string>SAMI 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>smi</string>
+					<string>sami</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.matroska.subrip</string>
+			<key>UTTypeDescription</key>
+			<string>SubRip 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>srt</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.irayer.ssa</string>
+			<key>UTTypeDescription</key>
+			<string>SubStation Alpha 자막</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ass</string>
+					<string>ssa</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<!-- 바뀜 (2026-11-25, 사용자: 파일 앱에서 "iRayer로 열기"): 아이폰 파일 연결.
+	     원래 자리에서 연다(LSSupportsOpeningDocumentsInPlace) — 몇 GB 영상을 앱 안으로 복사하지 않게.
+	     iOS 가 아는 형식은 기본 앱 자리를 뺏지 않게 Alternate, iOS 에 없는 mkv 만 Default.
+	     라이브러리·추가한 폴더 밖의 파일은 재생만 하고 기록을 남기지 않는다 (OpenedFile.swift) -->
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>영상</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.mpeg-4</string>
+				<string>public.avi</string>
+				<string>public.mpeg</string>
+				<string>com.microsoft.windows-media-wmv</string>
+				<string>public.mpeg-2-transport-stream</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Matroska 영상</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.matroska.mkv</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

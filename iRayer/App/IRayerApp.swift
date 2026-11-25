@@ -21,6 +21,9 @@ struct IRayerApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                // 바뀜 (2026-11-25, 사용자: 파일 앱에서 "iRayer로 열기"): 넘어온 영상을 바로 재생 (OpenedFile)
+                .onOpenURL { url in OpenedFile.open(url) }
+                .modifier(OpenFailureAlert())
         }
         // 키보드(아이패드): 메뉴 막대와 ⌘ 를 길게 눌렀을 때 나오는 단축키 목록에 보인다
         .commands { PlaybackCommands() }
@@ -33,6 +36,19 @@ struct IRayerApp: App {
                 // 다른 기기에서 바꾼 것 받기
                 Task { await SyncEngine.shared.syncNow() }
             }
+        }
+    }
+}
+
+/// 바뀜 (2026-11-25, 사용자): 파일 앱에서 넘어온 파일을 못 열면 이유를 알림으로
+private struct OpenFailureAlert: ViewModifier {
+    @State private var failure = OpenFailure.shared
+
+    func body(content: Content) -> some View {
+        content.alert("열 수 없음", isPresented: Binding(get: { failure.message != nil }, set: { if !$0 { failure.message = nil } })) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(failure.message ?? "")
         }
     }
 }

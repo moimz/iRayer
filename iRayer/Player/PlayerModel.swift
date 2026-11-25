@@ -84,7 +84,7 @@ final class PlayerModel {
     var subtitleDelay: Int = 0 {
         didSet {
             player.currentVideoSubTitleDelay = subtitleDelay * 1000
-            store.update(file.stateKey) { $0.subtitleDelay = subtitleDelay }
+            remember { $0.subtitleDelay = subtitleDelay }
         }
     }
 
@@ -92,7 +92,7 @@ final class PlayerModel {
     var audioDelay: Int = 0 {
         didSet {
             player.currentAudioPlaybackDelay = audioDelay * 1000
-            store.update(file.stateKey) { $0.audioDelay = audioDelay }
+            remember { $0.audioDelay = audioDelay }
         }
     }
 
@@ -125,6 +125,9 @@ final class PlayerModel {
     @ObservationIgnored private var interleaveSkew: Double?
     @ObservationIgnored private let store = PlaybackStateStore.shared
     @ObservationIgnored private let resume: Bool
+    /// 바뀜 (2026-11-25, 사용자: 파일 앱에서 "iRayer로 열기"): 라이브러리·추가한 폴더 밖에서 연 파일이면 false →
+    /// 재생 위치·자막·오디오 설정·이어보기를 남기지 않는다 (동기화·장면 캡처도 위치가 없으니 따라서 안 생긴다)
+    @ObservationIgnored private let keepsRecords: Bool
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var openedAt = Date()
     /// VLC 가 마지막으로 알려 준 재생 시간과 그때. VLC 3 는 파일을 읽어 들이는 쪽에서 시간을 갱신하므로, 네트워크가 잠깐 느려
@@ -156,6 +159,7 @@ final class PlayerModel {
     init(file: VideoFile, resume: Bool) {
         self.file = file
         self.resume = resume
+        self.keepsRecords = OpenedFile.keepsRecords(file.url)
         #if DEBUG
         // 테스트용 실행 인자 `-showControls YES`: 컨트롤을 계속 보여준다 (시뮬레이터 테스트 도구의 탭이 늦게 전달돼서)
         if UserDefaults.standard.bool(forKey: "showControls") { controlsVisible = true }
@@ -394,7 +398,7 @@ final class PlayerModel {
         let info = MediaInfo(width: width, height: height, videoCodec: video.flatMap(fourCC), audioCodec: audio.flatMap(fourCC),
                              audioChannels: (audio?[VLCMediaTracksInformationAudioChannelsNumber] as? NSNumber)?.intValue,
                              interleaveSkew: interleaveSkew)
-        store.update(file.stateKey) { $0.media = info }
+        remember { $0.media = info }
     }
 
     /// MP4·MOV 면 목차만 따로 읽어 소리·영상이 얼마나 떨어져 저장됐는지 잰다 (한 번만, 2026-11-10 사용자: 파일 정보에 * 표시)
@@ -503,7 +507,7 @@ final class PlayerModel {
     /// 메뉴에서 자막을 고르면 적용하고 영상별로 기억한다
     func selectSubtitle(_ choice: SubtitleChoice) {
         Task { await applySubtitle(choice) }
-        store.update(file.stateKey) {
+        remember {
             switch choice {
             case .off:
                 $0.subtitleTrackID = -1
@@ -522,7 +526,7 @@ final class PlayerModel {
         player.currentAudioTrackIndex = id
         selectedAudioID = id
         // 영상별로 기억한다 (다른 기기에도 iCloud 로)
-        store.update(file.stateKey) { $0.audioTrackID = id }
+        remember { $0.audioTrackID = id }
     }
 
     /// 자막 불러오기로 고른 파일을 적용하고 영상별로 기억한다
@@ -947,16 +951,24 @@ final class PlayerModel {
         }
     }
 
+    /// 이 영상의 재생 기록 바꾸기 (밖에서 연 파일이면 남기지 않는다)
+    private func remember(_ change: (inout VideoPlaybackState) -> Void) {
+        guard keepsRecords else { return }
+        store.update(file.stateKey, change)
+    }
+
     private func saveProgress() {
         lastSavedAt = Date()
         // 첫 장면이 나오기 전에는 재생 시간이 아직 0 이라, 저장하면 이어보기에서 빠진다
         guard started, hasFirstFrame, duration > 0 else { return }
+        // 바뀜 (2026-11-25): 밖에서 연 파일은 위치도 이어보기도 남기지 않는다
+        guard keepsRecords else { return }
         // 바뀜 (2026-11-11, 사용자): 다 본 것으로 표시된 영상은 다시 봐도 위치·이어보기를 남기지 않는다 (정보 화면에서 표시를 지우면 다시 남긴다)
         guard !store.isWatched(file.stateKey) else { return }
         let position = currentTime
         // 엔딩 크레딧까지 보지 않아도 90% 넘게 봤으면 다 본 것 (Plex 기본값과 같다)
         let finished = position > duration * 0.9
-        store.update(file.stateKey) {
+        remember {
             $0.position = finished ? 0 : position
             $0.duration = duration
             if finished { $0.watchedAt = .now }

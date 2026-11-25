@@ -28,6 +28,10 @@ struct AboutView: View {
                 }
                 section("오픈소스") {
                     item("VLCKit · MobileVLCKit (LGPL 2.1)", "영상 재생", "https://code.videolan.org/videolan/VLCKit")
+                    // 바뀜 (2026-11-25, 사용자: 아이폰 파일 앱 mkv 썸네일): 썸네일 확장의 FFmpeg
+                    #if os(iOS)
+                    item("FFmpeg (LGPL 2.1)", "파일 앱 썸네일 확장", "https://ffmpeg.org")
+                    #endif
                     #if os(macOS)
                     item("FFmpeg (LGPL 2.1)", "웹에서 받은 영상 조각 묶기", "https://ffmpeg.org")
                     item("Sparkle (MIT)", "자동 업데이트", "https://sparkle-project.org")

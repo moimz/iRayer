@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- 아이폰·아이패드 썸네일 확장 (iRayerThumbnail, 1.2~). iOS 가 스스로 못 그리는 영상 형식만 맡는다.
+     mkv·webm 등 iOS 에 없는 형식 이름은 앱의 Support/Info.plist UTImportedTypeDeclarations 에서 들여온다. -->
+<plist version="1.0">
+<dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>QLSupportedContentTypes</key>
+			<array>
+				<string>org.matroska.mkv</string>
+				<string>org.webmproject.webm</string>
+				<string>public.avi</string>
+				<string>com.microsoft.windows-media-wmv</string>
+				<string>com.microsoft.advanced-systems-format</string>
+				<string>com.adobe.flash.video</string>
+				<string>com.real.realmedia</string>
+				<string>com.real.realmedia-vbr</string>
+				<string>org.xiph.ogv</string>
+			</array>
+			<key>QLThumbnailMinimumDimension</key>
+			<integer>0</integer>
+		</dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.quicklook.thumbnail</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>$(PRODUCT_MODULE_NAME).ThumbnailProvider</string>
+	</dict>
+</dict>
+</plist>

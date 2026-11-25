@@ -21,6 +21,8 @@
 		A10000000000000000000141 /* ffmpeg in Embed Helpers */ = {isa = PBXBuildFile; fileRef = A10000000000000000000140 /* ffmpeg */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A10000000000000000000308 /* QLVideo Formats.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000301 /* QLVideo Formats.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A10000000000000000000318 /* QLVideo Codecs.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000311 /* QLVideo Codecs.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1000000000000000000040A /* FFmpeg.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000000000000000000409 /* FFmpeg.xcframework */; };
+		A1000000000000000000040D /* iRayerThumbnail.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000401 /* iRayerThumbnail.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = A10000000000000000000310;
 			remoteInfo = QLVideoCodecs;
+		};
+		A1000000000000000000040B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1000000000000000000000A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000400;
+			remoteInfo = iRayerThumbnail;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -88,6 +97,17 @@
 			name = "Embed ExtensionKit Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1000000000000000000040E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A1000000000000000000040D /* iRayerThumbnail.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +118,8 @@
 		A10000000000000000000010 /* MobileVLCKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = MobileVLCKit.xcframework; sourceTree = "<group>"; };
 		A10000000000000000000301 /* QLVideo Formats.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "QLVideo Formats.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000311 /* QLVideo Codecs.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "QLVideo Codecs.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000401 /* iRayerThumbnail.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iRayerThumbnail.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000409 /* FFmpeg.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FFmpeg.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -132,6 +154,11 @@
 			path = iRayerMac;
 			sourceTree = "<group>";
 		};
+		A10000000000000000000408 /* iRayerThumbnail */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = iRayerThumbnail;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +183,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10000000000000000000406 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000040A /* FFmpeg.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -164,6 +199,7 @@
 			children = (
 				A10000000000000000000002 /* iRayer */,
 				A10000000000000000000102 /* iRayerMac */,
+				A10000000000000000000408 /* iRayerThumbnail */,
 				A10000000000000000000011 /* Vendor */,
 				A10000000000000000000005 /* Products */,
 			);
@@ -175,6 +211,7 @@
 				A10000000000000000000010 /* MobileVLCKit.xcframework */,
 				A10000000000000000000110 /* VLCKit.xcframework */,
 				A10000000000000000000140 /* ffmpeg */,
+				A10000000000000000000409 /* FFmpeg.xcframework */,
 			);
 			path = Vendor;
 			sourceTree = "<group>";
@@ -186,6 +223,7 @@
 				A10000000000000000000101 /* iRayer.app */,
 				A10000000000000000000301 /* QLVideo Formats.appex */,
 				A10000000000000000000311 /* QLVideo Codecs.appex */,
+				A10000000000000000000401 /* iRayerThumbnail.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,11 +239,13 @@
 				A10000000000000000000003 /* Frameworks */,
 				A10000000000000000000009 /* Resources */,
 				A10000000000000000000014 /* Embed Frameworks */,
+				A1000000000000000000040E /* Embed Foundation Extensions */,
 				A10000000000000000000099 /* Stamp Build Number */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A1000000000000000000040C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A10000000000000000000002 /* iRayer */,
@@ -283,6 +323,26 @@
 			productReference = A10000000000000000000311 /* QLVideo Codecs.appex */;
 			productType = "com.apple.product-type.extensionkit-extension";
 		};
+		A10000000000000000000400 /* iRayerThumbnail */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000000000000000000402 /* Build configuration list for PBXNativeTarget "iRayerThumbnail" */;
+			buildPhases = (
+				A10000000000000000000405 /* Sources */,
+				A10000000000000000000406 /* Frameworks */,
+				A10000000000000000000407 /* Stamp Build Number */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A10000000000000000000408 /* iRayerThumbnail */,
+			);
+			name = iRayerThumbnail;
+			productName = iRayerThumbnail;
+			productReference = A10000000000000000000401 /* iRayerThumbnail.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -325,6 +385,7 @@
 				A10000000000000000000106 /* iRayerMac */,
 				A10000000000000000000300 /* QLVideoFormats */,
 				A10000000000000000000310 /* QLVideoCodecs */,
+				A10000000000000000000400 /* iRayerThumbnail */,
 			);
 		};
 /* End PBXProject section */
@@ -469,6 +530,27 @@
 			shellScript = "sh \"$SRCROOT/Scripts/embed-qlvideo.sh\" app\n";
 			showEnvVarsInLog = 0;
 		};
+		A10000000000000000000407 /* Stamp Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Stamp Build Number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/Scripts/stamp-build-number.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -480,6 +562,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A10000000000000000000108 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000000000000000000405 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,6 +587,11 @@
 			isa = PBXTargetDependency;
 			target = A10000000000000000000310 /* QLVideoCodecs */;
 			targetProxy = A10000000000000000000316 /* PBXContainerItemProxy */;
+		};
+		A1000000000000000000040C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000400 /* iRayerThumbnail */;
+			targetProxy = A1000000000000000000040B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -778,6 +872,62 @@
 			};
 			name = Release;
 		};
+		A10000000000000000000403 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Support/Thumbnail-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "iRayer 썸네일";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.thumbnail;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A10000000000000000000404 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XSDBV8D2XL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Support/Thumbnail-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "iRayer 썸네일";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moimz.iRayer.thumbnail;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -822,6 +972,15 @@
 			buildConfigurations = (
 				A10000000000000000000313 /* Debug */,
 				A10000000000000000000314 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000000000000000000402 /* Build configuration list for PBXNativeTarget "iRayerThumbnail" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000403 /* Debug */,
+				A10000000000000000000404 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
