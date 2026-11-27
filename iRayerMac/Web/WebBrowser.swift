@@ -72,7 +72,7 @@ final class WebBrowser: NSObject {
         Self.setPrivate(config.preferences, "_setPageVisibilityBasedProcessSuppressionEnabled:", false)
         // 바뀜 (2026-11-12, 사용자): 광고 차단 규칙 (막힌 요청은 감지 목록에도 안 나온다)
         AdBlock.shared.attach(config.userContentController)
-        webView = WKWebView(frame: .zero, configuration: config)
+        webView = BrowserWebView(frame: .zero, configuration: config)
         // 바뀜 (2026-11-09, 사용자): 모니터가 꺼지거나 다른 창이 덮어도 페이지를 숨김(document.hidden)으로 보지 않게 —
         //   창이 가려졌는지 살피는 것을 끈다 (WebKit 비공개, macOS 10.14.4~. 없으면 건너뛴다). 모니터는 그대로 꺼진다
         Self.setPrivate(webView, "_setWindowOcclusionDetectionEnabled:", false)
@@ -458,5 +458,34 @@ extension WebBrowser {
     /// 모든 탭이 같이 쓰는 저장소의 쿠키
     static func cookies() async -> [HTTPCookie] {
         await dataStore.httpCookieStore.allCookies()
+    }
+}
+
+/// 웹 보기: 앱 공통 단축키(⌘Q 종료 · ⌘H 가리기 · ⌘M 최소화 · ⌘, 설정)는 웹 페이지보다 메뉴가 먼저 받는다.
+/// 바뀜 (2026-11-27, 사용자: 영상으로 켠 뒤 Dock 으로 연 라이브러리 창에서 ⌘Q 가 안 됨, 메뉴의 종료는 됨): 나중에 만들어진
+/// 라이브러리 창에서는 웹 탐색의 웹 보기가 처음부터 키 포커스를 갖는데(진단: 응답 사슬 맨 앞 = 웹 보기) WKWebView 가 ⌘Q 를
+/// 페이지로 보내고 메뉴로 돌려주지 않았다. 앱을 그냥 켰을 때는 다른 뷰가 포커스라 괜찮았다.
+final class BrowserWebView: WKWebView {
+    /// 지금 보이는 웹 탐색 탭인지 (WebPageLayer 가 정한다). 웹 탐색이 아닌 칸을 보는 동안에도 받기가 끊기지 않게 웹 보기를 창에
+    /// 투명하게 남겨 두는데, 그때 키 포커스를 가져가면 화면은 홈인데 키 입력은 숨은 웹 페이지로 갔다 (2026-11-27, 사용자: 근본적으로 막자).
+    /// 숨은 동안에는 포커스를 받지 않고, 갖고 있다가 숨으면 내려놓는다
+    var isFront = true {
+        didSet {
+            guard !isFront, oldValue, let window, window.firstResponder === self else { return }
+            window.makeFirstResponder(nil)
+        }
+    }
+
+    override var acceptsFirstResponder: Bool { isFront && super.acceptsFirstResponder }
+
+    /// 키보드 키 번호 (글자로 견주면 한글 입력 상태에서 ⌘Q 가 "ㅂ" 으로 와서 못 알아본다): Q 12 · H 4 · M 46 · , 43
+    private static let appShortcutKeys: Set<UInt16> = [12, 4, 46, 43]
+
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection([.command, .shift, .option, .control])
+        if flags == .command, Self.appShortcutKeys.contains(event.keyCode) {
+            if NSApp.mainMenu?.performKeyEquivalent(with: event) == true { return true }
+        }
+        return super.performKeyEquivalent(with: event)
     }
 }

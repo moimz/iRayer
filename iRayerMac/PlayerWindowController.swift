@@ -125,7 +125,8 @@ final class MacPlayback {
             target = CGSize(width: target.width * scale, height: target.height * scale)
         }
         // 창 최소 크기보다 작으면 비율을 지키며 키운다
-        let grow = max(1, window.minSize.width / target.width, window.minSize.height / target.height)
+        let minimum = PlayerWindowController.minimumSize
+        let grow = max(1, minimum.width / target.width, minimum.height / target.height)
         target = CGSize(width: target.width * grow, height: target.height * grow)
         target = CGSize(width: target.width.rounded(), height: target.height.rounded())
         let center = size == .fitScreen ? CGPoint(x: visible.midX, y: visible.midY) : CGPoint(x: window.frame.midX, y: window.frame.midY)
@@ -167,7 +168,9 @@ final class PlayerWindowController: NSObject, NSWindowDelegate {
         window.backgroundColor = .black
         window.collectionBehavior = [.fullScreenPrimary]
         window.isReleasedWhenClosed = false
-        window.minSize = NSSize(width: 320, height: 180)
+        // 바뀜 (2026-11-27, 사용자: 160×120 같은 아주 작은 영상은 원본 크기로 열면 조작 막대가 깨진다): 최소 320×180 → 320×240.
+        // 영상이 이보다 작으면 resizeWindow 가 비율을 지키며 키운다
+        window.minSize = Self.minimumSize
         window.delegate = self
         if let previous {
             // 두 번째부터: 앞 창 크기로 오른쪽 아래로 비켜서 (위치는 저장하지 않는다)
@@ -179,6 +182,9 @@ final class PlayerWindowController: NSObject, NSWindowDelegate {
         }
     }
 
+    /// 재생 창 최소 크기: 간소한 조작 막대(진행률 + 단추 줄)와 위 제목이 다 들어가는 크기
+    static let minimumSize = NSSize(width: 320, height: 240)
+
     func bringToFront() {
         window.makeKeyAndOrderFront(nil)
         NSApp.activate()
@@ -189,7 +195,10 @@ final class PlayerWindowController: NSObject, NSWindowDelegate {
         let playback = MacPlayback(model: model, requestID: id, window: window)
         self.playback = playback
         window.title = request.file.title
-        window.contentView = NSHostingView(rootView: MacPlayerView(playback: playback))
+        // NSHostingView 는 기본으로 SwiftUI 내용 크기로 창 최소 크기를 덮어써서(재생 화면은 최소가 없어 사실상 0) 위 최소 크기가 무시됐다 → 끈다
+        let host = NSHostingView(rootView: MacPlayerView(playback: playback))
+        host.sizingOptions = []
+        window.contentView = host
         window.makeKeyAndOrderFront(nil)
         NSApp.activate()
         model.start()
@@ -208,7 +217,10 @@ final class PlayerWindowController: NSObject, NSWindowDelegate {
         playback.fullScreenChanged(old.isFullScreen)
         self.playback = playback
         window.title = file.title
-        window.contentView = NSHostingView(rootView: MacPlayerView(playback: playback))
+        // NSHostingView 는 기본으로 SwiftUI 내용 크기로 창 최소 크기를 덮어써서(재생 화면은 최소가 없어 사실상 0) 위 최소 크기가 무시됐다 → 끈다
+        let host = NSHostingView(rootView: MacPlayerView(playback: playback))
+        host.sizingOptions = []
+        window.contentView = host
         model.start()
     }
 

@@ -310,7 +310,6 @@ private struct WebSettingsPanel: View {
                 Text("보기")
             } footer: {
                 Text("소리는 탭마다 꺼진 채로 시작합니다. 주소칸 옆 단추로 켭니다.")
-                    .foregroundStyle(.secondary)
             }
             Section {
                 if bookmarks.items.isEmpty {
@@ -325,7 +324,6 @@ private struct WebSettingsPanel: View {
                 Text("즐겨찾기")
             } footer: {
                 Text("이름을 고치고 Return. 끌어서 순서를 바꿉니다. iCloud 로 다른 기기와 같이 씁니다.")
-                    .foregroundStyle(.secondary)
             }
             // 광고 차단 (2026-11-12, 사용자): 규칙은 시트에서 고친다 (패널은 좁다). iCloud 로 아이폰·아이패드와 같이 쓴다
             Section {
@@ -354,7 +352,6 @@ private struct WebSettingsPanel: View {
                     .onChange(of: remoteEnabled) { MacRemoteHost.shared.setEnabled(remoteEnabled) }
             } footer: {
                 Text("켜면 아이폰·아이패드 웹 탐색에서 이 맥으로 페이지를 보내 받고, 열린 탭을 보고 닫을 수 있습니다.")
-                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
@@ -809,7 +806,7 @@ struct WebPageLayer: View {
         ZStack {
             ForEach(tabs.tabs) { tab in
                 let front = visible && tab.id == tabs.currentID
-                WebViewHost(webView: tab.browser.webView)
+                WebViewHost(webView: tab.browser.webView, front: front)
                     .padding(.trailing, front && tabs.sidePanelOpen ? WebBrowser.sidePanelWidth : 0)
                     .opacity(front ? 1 : 0)
                     .allowsHitTesting(front)
@@ -823,7 +820,14 @@ struct WebPageLayer: View {
 /// 앱에 하나뿐인 웹뷰를 SwiftUI 에 붙인다 (화면을 다시 그려도 웹뷰는 새로 만들지 않는다)
 private struct WebViewHost: NSViewRepresentable {
     let webView: WKWebView
+    /// 지금 보이는 탭인지. 아니면 키 포커스를 받지 않는다 (BrowserWebView.isFront)
+    let front: Bool
 
-    func makeNSView(context: Context) -> WKWebView { webView }
-    func updateNSView(_ nsView: WKWebView, context: Context) {}
+    func makeNSView(context: Context) -> WKWebView {
+        (webView as? BrowserWebView)?.isFront = front
+        return webView
+    }
+    func updateNSView(_ nsView: WKWebView, context: Context) {
+        (nsView as? BrowserWebView)?.isFront = front
+    }
 }

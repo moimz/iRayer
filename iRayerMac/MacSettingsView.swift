@@ -8,6 +8,8 @@ struct MacSettingsView: View {
             Tab("자막", systemImage: "captions.bubble") { SubtitleSettings() }
             // 바뀜 (2026-11-08): 읽기(이미지뷰어·나중에 텍스트 뷰어) 공통 설정
             Tab("읽기", systemImage: "book") { ReadingSettings() }
+            // 파일 연결 (2026-11-27, 사용자): 영상 확장자마다 기본 앱을 iRayer 로 (FileAssociation.swift)
+            Tab("파일 연결", systemImage: "link") { FileAssociationSettings() }
             Tab("저장소", systemImage: "externaldrive.connected.to.line.below") { StorageSettings() }
             Tab("라이브러리", systemImage: "books.vertical") { LibrarySettings() }
             Tab("에이전트", systemImage: "sparkle.magnifyingglass") { AgentSettings() }
@@ -16,7 +18,8 @@ struct MacSettingsView: View {
             Tab("캐시", systemImage: "internaldrive") { CacheSettings() }
         }
         // 바뀜 (2026-11-08): 읽기 탭이 늘어 탭이 넘쳐 » 가 생겼다 (사용자) → 520 → 660
-        .frame(width: 660, height: 560)
+        // 바뀜 (2026-11-27): 파일 연결 탭이 늘어 660 → 740 (탭이 넘치면 » 로 숨는다)
+        .frame(width: 740, height: 560)
         // 바뀜 (2026-11-16, 사용자): Mail 처럼 위 아이콘 탭줄에 띠(음영)가 보이게 — iSQL 과 같은 방법
         .background(SettingsWindowStyler())
     }
@@ -88,25 +91,9 @@ private struct GeneralSettings: View {
             FinderPreviewSection()
             // 자동 업데이트 (Sparkle, 1.0 부터): 버전 · 업데이트 확인 · 자동 확인
             UpdateSection()
-            Section {
-            } footer: {
-                Text(versionText)
-                    .frame(maxWidth: .infinity)
-                    .textSelection(.enabled)
-            }
         }
         .formStyle(.grouped)
         .adultFilterPINSheet($askingPIN)
-    }
-
-    /// 버전 정보: "버전 1.0 (빌드 62 · 0a1cd22)" — 빌드 번호는 git 커밋 수, 뒤는 커밋 해시
-    private var versionText: String {
-        let info = Bundle.main.infoDictionary ?? [:]
-        // 시험판 브랜치(2.1b 등) 빌드는 "2.1b"
-        let version = (info["CFBundleShortVersionString"] as? String ?? "-") + (info["IRayerBeta"] as? Bool == true ? "b" : "")
-        let build = info["CFBundleVersion"] as? String ?? "-"
-        let commit = info["IRayerCommit"] as? String
-        return "버전 \(version) (빌드 \(build)\(commit.map { " · \($0)" } ?? ""))"
     }
 }
 

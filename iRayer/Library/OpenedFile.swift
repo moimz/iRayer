@@ -1,5 +1,8 @@
 import Foundation
 import Observation
+#if os(macOS)
+import AppKit
+#endif
 
 /// 다른 앱(파일 앱 등)에서 "iRayer로 열기"로 넘어온 영상 (1.2~, 2026-11-25 사용자: 파일 앱의 mkv 를 iRayer 로).
 /// - 원래 자리에서 연다 (Info.plist 의 LSSupportsOpeningDocumentsInPlace). 넘어온 주소는 그 파일 하나만 읽을 권한이 있다.
@@ -9,7 +12,8 @@ import Observation
 /// - 바뀜 (2026-11-25, 사용자와 iNAS 조사): 파일 앱은 다른 앱에 넘길 경로를 NFD(자모 분리)로 만든다. 디스크 이름이 NFC 인
 ///   한글 파일(파일 제공 앱이 NFC 이름을 준 경우)은 샌드박스 정규 경로 검사에서 막혀 iRayer 가 주소 없이 뜨거나 아예 안 불린다.
 ///   iRayer 쪽으로는 못 고침 — iNAS 는 파일 앱에 이름을 NFD 로 줘서 해결 (iNAS 9d1041a, 빌드 26). Ai/iRayer.md 참고.
-/// - 공통 부분(위치 판단·기록 여부)은 맥도 쓴다. 맥 파일 연결은 아직 없다 (InfoMac.plist 에 CFBundleDocumentTypes 없음).
+/// - 공통 부분(위치 판단·기록 여부)은 맥도 쓴다. 맥은 Finder "다음으로 열기 › iRayer" 로 넘어온다 (2026-11-27, InfoMac.plist 의 CFBundleDocumentTypes,
+///   AppDelegate.application(_:open:)). 맥은 샌드박스가 없어 권한 문제는 없고, 기록 규칙(아는 위치 밖이면 재생만)은 같다.
 @MainActor
 enum OpenedFile {
     /// 밖에서 열어 기록을 남기지 않는 영상 주소들 (PlayerModel 이 본다)
@@ -87,6 +91,26 @@ enum OpenedFile {
         guard let handle = try? FileHandle(forReadingFrom: url) else { return false }
         defer { try? handle.close() }
         return (try? handle.read(upToCount: 1)) != nil
+    }
+    #endif
+
+    #if os(macOS)
+    /// Finder 에서 연 파일들 (AppDelegate.application(_:open:)): 영상마다 재생 창을 연다. 영상이 아니거나 못 읽으면 알린다
+    static func open(_ urls: [URL]) {
+        var failed: [String] = []
+        for url in urls where url.isFileURL {
+            guard VideoFile.isVideo(url), FileManager.default.isReadableFile(atPath: url.path(percentEncoded: false)),
+                  let file = videoFile(for: url) else {
+                failed.append(url.lastPathComponent)
+                continue
+            }
+            PlayerHost.shared.play(file, resume: keepsRecords(url))
+        }
+        guard !failed.isEmpty else { return }
+        let alert = NSAlert()
+        alert.messageText = failed.count == 1 ? "‘\(failed[0])’ 을(를) 열 수 없습니다." : "\(failed.count)개 파일을 열 수 없습니다."
+        alert.informativeText = "iRayer 가 재생할 수 있는 영상 형식이 아니거나 읽을 수 없는 파일입니다." + (failed.count > 1 ? "\n\n" + failed.joined(separator: "\n") : "")
+        alert.runModal()
     }
     #endif
 }

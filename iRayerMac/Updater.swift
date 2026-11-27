@@ -55,7 +55,9 @@ struct UpdateSection: View {
         Section {
             LabeledContent("버전") {
                 HStack(spacing: 8) {
-                    Text(Self.version).foregroundStyle(.secondary).monospacedDigit()
+                    // 한 줄로 못 박지 않으면 줄바꿈될 수 있는 글로 재서 폭을 덜 받아 "…" 로 잘리고 버튼 오른쪽이 빈다 (Ai.md 12번)
+                    Text(Self.version).foregroundStyle(.secondary).monospacedDigit().textSelection(.enabled)
+                        .lineLimit(1).fixedSize()
                     Button("업데이트 확인…") { updater.checkForUpdates() }.disabled(!updater.canCheck)
                 }
             }
@@ -67,9 +69,13 @@ struct UpdateSection: View {
         }
     }
 
-    /// "1.0 (3)"
-    private static var version: String {
+    /// "1.3 (빌드 9 · 2855fa9)" — 빌드 번호는 git 커밋 수, 뒤는 커밋 해시 (일반 탭 맨 아래에 따로 두던 버전 줄을 여기로 합침)
+    static var version: String {
         let info = Bundle.main.infoDictionary ?? [:]
-        return "\(info["CFBundleShortVersionString"] as? String ?? "-") (\(info["CFBundleVersion"] as? String ?? "-"))"
+        // 시험판 브랜치(2.1b 등) 빌드는 "2.1b"
+        let version = (info["CFBundleShortVersionString"] as? String ?? "-") + (info["IRayerBeta"] as? Bool == true ? "b" : "")
+        let build = info["CFBundleVersion"] as? String ?? "-"
+        let commit = info["IRayerCommit"] as? String
+        return "\(version) (빌드 \(build)\(commit.map { " · \($0)" } ?? ""))"
     }
 }

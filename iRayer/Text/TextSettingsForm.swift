@@ -30,8 +30,6 @@ struct TextStyleSection: View {
             FormHeader("보기", isFirst: isFirst)
         } footer: {
             Text("이 기기의 모든 텍스트 파일에 씁니다.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
         }
     }
 }
@@ -91,8 +89,6 @@ struct TextSettingsForm: View {
                 FormHeader("이 파일", isFirst: true)
             } footer: {
                 Text("글자가 깨져 보이면 인코딩을 바꿔 보세요.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
             }
             TextStyleSection()
         }
