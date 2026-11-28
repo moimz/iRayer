@@ -8,6 +8,9 @@ enum LibraryOrganizer {
         let file: LibraryData.FileEntry
         /// 옮길 경로 (라이브러리 폴더 기준, 확장자 포함)
         let to: String
+        /// 에이전트가 정한 위치 (옮긴 뒤 DB 의 target_folder·target_name 으로 저장)
+        let targetFolder: String
+        let targetName: String
         var id: String { file.id }
     }
 
@@ -16,21 +19,29 @@ enum LibraryOrganizer {
     /// 옮길 파일: 마지막 매칭 때 받은 위치 + (지원하면) 에이전트가 지금 계산한 위치
     static func collect(_ library: LibraryRecord) async -> [Move] {
         let files = LibraryData.files(in: library.id, status: "matched")
-        var moves: [String: Move] = [:]
-        for file in files {
-            guard let folder = file.targetFolder, let name = file.targetName else { continue }
-            let to = destination(of: file, folder: folder, name: name)
-            if to != file.path, !isShortened(file.path, of: to) { moves[file.id] = Move(file: file, to: to) }
-        }
         // 컬렉션이 새로 생기거나 제목을 고친 것은 에이전트가 알려 준다
+        // 바뀜 (2026-11-29, 사용자: S01E063 → S01E63 으로 바꿨더니 다시 S01E063 으로 바꾸려 함): 옮길 곳을 알려 주는 에이전트의 파일은
+        // 그 에이전트가 지금 계산한 위치만 따른다. 매칭 때 받아 둔 위치(회차 자릿수 규칙이 바뀌기 전 S01E63)와 에이전트가 지금 주는 위치(S01E063)가
+        // 달라, 제자리인 파일(에이전트 목록에 없음)을 옛 위치로 옮기자 하고, 옮기면 에이전트가 다시 돌려 놓자 해서 번갈아 바꾸려 했다.
+        var moves: [String: Move] = [:]
+        var relocating: Set<String> = []
         for entry in library.agents {
             guard let agent = AgentStore.shared.agent(entry.agentID), agent.type == .custom, agent.relocations,
                   let found = try? await agent.customClient.relocations(kind: entry.kind) else { continue }
+            relocating.insert(entry.agentID)
             for relocation in found {
                 guard let file = files.first(where: { $0.hash == relocation.hash && $0.size == relocation.size }) else { continue }
                 let to = destination(of: file, folder: relocation.target.folder, name: relocation.target.filename)
-                moves[file.id] = to == file.path || isShortened(file.path, of: to) ? nil : Move(file: file, to: to)
+                if to != file.path, !isShortened(file.path, of: to) {
+                    moves[file.id] = Move(file: file, to: to, targetFolder: relocation.target.folder, targetName: relocation.target.filename)
+                }
             }
+        }
+        for file in files where moves[file.id] == nil {
+            if let agentID = file.itemKey?.split(separator: ":").first.map(String.init), relocating.contains(agentID) { continue }
+            guard let folder = file.targetFolder, let name = file.targetName else { continue }
+            let to = destination(of: file, folder: folder, name: name)
+            if to != file.path, !isShortened(file.path, of: to) { moves[file.id] = Move(file: file, to: to, targetFolder: folder, targetName: name) }
         }
         return moves.values.sorted { $0.file.path.localizedStandardCompare($1.file.path) == .orderedAscending }
     }
@@ -128,8 +139,10 @@ enum LibraryOrganizer {
         }
 
         // 라이브러리 DB 와 에이전트의 경로
-        try? AppDatabase.library.execute("UPDATE files SET path = ?, raw_path = ? WHERE library_id = ? AND folder_id = ? AND path = ?",
+        // 바뀜 (2026-11-29): 옮긴 위치의 목표(target_folder·target_name)도 함께 바꾼다 (옛 목표가 남아 다시 옮기자 하지 않게)
+        try? AppDatabase.library.execute("UPDATE files SET path = ?, raw_path = ?, target_folder = ?, target_name = ? WHERE library_id = ? AND folder_id = ? AND path = ?",
                                          [.text(path.precomposedStringWithCanonicalMapping), .text(path),
+                                          .text(move.targetFolder), .text(move.targetName),
                                           .text(library.id), .text(move.file.folderID), .text(move.file.path)])
         if let hash = move.file.hash, let agentID = move.file.itemKey?.split(separator: ":").first.map(String.init),
            let agent = AgentStore.shared.agent(agentID), agent.type == .custom,
