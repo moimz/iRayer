@@ -24,6 +24,8 @@ struct MacOrganizeView: View {
                     if moves.isEmpty {
                         ContentUnavailableView("정리할 파일이 없습니다", systemImage: "checkmark.circle",
                                                description: Text("모든 파일이 정한 위치에 있습니다."))
+                            // 바뀜 (2026-11-29, 사용자: 한쪽으로 쏠림): 바깥 VStack 이 leading 이라 폭을 채워 가운데로
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         List(moves) { move in
                             VStack(alignment: .leading, spacing: 3) {
