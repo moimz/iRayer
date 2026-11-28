@@ -110,9 +110,23 @@ final class PlayerModel {
     var videoBottomInset: CGFloat = 0
     /// 화면(영상 뷰) 안에서 보이는 영상의 위치와 화면 크기. 레터박스 채우기에 쓴다.
     var videoFrame = CGRect.zero
-    var surfaceSize = CGSize.zero
+    var surfaceSize = CGSize.zero {
+        didSet {
+            // 바뀜 (2026-11-28, 사용자: 재생 중 회전하면 앰비언트가 영상 위에 잠깐 보였다가 제자리를 잡음): 가로·세로가 바뀌면
+            // 영상 위치와 화면 크기가 따로 바뀌는 동안 앰비언트가 엉뚱한 자리에 그려지므로, 바로 숨기고 크기가 자리 잡은 뒤 다시 보인다
+            let wasLandscape = oldValue.width > oldValue.height
+            let isLandscape = surfaceSize.width > surfaceSize.height
+            if oldValue != .zero, wasLandscape != isLandscape {
+                ambientHidden = true
+            }
+            if ambientHidden { surfaceChangedAt = Date() }
+        }
+    }
     /// 레터박스를 채울 영상의 작은 스냅숏 (흐리게 늘려 깐다)
     var ambientImage: UIImage?
+    /// 회전하는 동안 앰비언트를 숨긴다 (updateAmbient 가 크기가 0.5초 그대로면 푼다)
+    var ambientHidden = false
+    @ObservationIgnored private var surfaceChangedAt = Date.distantPast
     /// 아래쪽 컨트롤(제목·버튼·진행률 바)의 화면(window) 좌표. 이 위의 터치는 화면 제스처가 가져가지 않는다.
     @ObservationIgnored var bottomControlsFrame = CGRect.zero
     /// 위쪽 버튼(✕ · AirPlay · PiP)의 화면 좌표 (위와 같은 이유)
@@ -621,6 +635,10 @@ final class PlayerModel {
         if player.videoSize != .zero, player.videoSize != videoSize {
             videoSize = player.videoSize
         }
+        #if os(iOS)
+        // 바뀜 (2026-11-28, 사용자: 기기 안 영상이 1~2초 작게 나왔다 커짐): 영상 뷰 크기가 화면을 못 따라간 채 남는 경우를 바로잡는다
+        (phoneView?.superview as? PlayerSurfaceView)?.syncVideoViewSize()
+        #endif
         updateLoading(state)
         // 바뀜 (2026-11-07): 맥에서 끝까지 보고도 다음 화로 안 넘어감 (사용자, 빌드 283) — 끝에서 VLC 가 ended·stopped 가 아닌 상태로
         // 멈춰 있는 것으로 보여, 끝 2초 안에서 재생을 원하는데(일시 정지 안 함) 재생이 멈췄거나 VLC 시간이 1.5초 넘게 그대로면 끝난 것으로 본다.
@@ -894,6 +912,7 @@ final class PlayerModel {
         #else
         guard NSApp.occlusionState.contains(.visible) || NSApp.isActive else { return }
         #endif
+        if ambientHidden, Date().timeIntervalSince(surfaceChangedAt) > 0.5 { ambientHidden = false }
         let hasLetterbox = videoFrame.width < surfaceSize.width - 4 || videoFrame.height < surfaceSize.height - 4
         guard AppSettings.shared.ambientLetterbox, hasLetterbox, videoSize != .zero else {
             if ambientImage != nil { ambientImage = nil }

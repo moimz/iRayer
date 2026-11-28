@@ -69,6 +69,9 @@ struct PlayerView: View {
             if !external.isConnected {
                 AmbientLetterbox(image: model.ambientImage, videoFrame: model.videoFrame)
                     .ignoresSafeArea()
+                    // 바뀜 (2026-11-28, 사용자): 회전하는 동안은 바로 숨기고, 자리 잡은 뒤 천천히 다시 보인다
+                    .opacity(model.ambientHidden ? 0 : 1)
+                    .animation(model.ambientHidden ? nil : .easeIn(duration: 0.4), value: model.ambientHidden)
             }
             if external.isConnected {
                 // 영상과 자막은 TV 에 나온다. 폰은 조작용.

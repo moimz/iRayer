@@ -114,6 +114,24 @@ final class PlayerSurfaceView: UIView, UIGestureRecognizerDelegate {
         applyZoom()
     }
 
+    /// 바뀜 (2026-11-28, 사용자: 기기 안 영상이 가로에서 1~2초 작게 나왔다 커짐): 플레이어가 뜨며 이 뷰가 작게 시작해 커지는데,
+    /// 마지막 크기 변경(0.27초쯤) 뒤 layoutSubviews 가 불리지 않아 영상 뷰(VLC 가 그리는 뷰)가 처음의 작은 크기로 남았다
+    /// (조작 단추가 숨으며 다시 배치될 때 4초쯤에야 맞춰짐, 화면 크기 기록으로 확인). 크기가 다르면 바로 다시 배치한다.
+    /// 첫 장면이 늦게 나오는 NAS 영상은 그동안 화면이 까매서 안 보였다. PlayerModel 이 재생 상태를 갱신할 때마다 부른다.
+    func syncVideoViewSize() {
+        guard videoView.bounds.size != bounds.size else { return }
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+
+    override var bounds: CGRect {
+        didSet { if bounds.size != oldValue.size { setNeedsLayout() } }
+    }
+
+    override var frame: CGRect {
+        didSet { if frame.size != oldValue.size { setNeedsLayout() } }
+    }
+
     func videoSizeChanged(_ size: CGSize) {
         guard size != videoSize else { return }
         videoSize = size
