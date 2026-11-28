@@ -60,7 +60,7 @@ final class PlayerSurfaceView: UIView, UIGestureRecognizerDelegate {
 
         videoView.isUserInteractionEnabled = false
         addSubview(videoView)
-        model.attach(to: videoView)
+        // 바뀜 (2026-11-28): VLC 에 영상 뷰를 넘기는 것(재생 시작)은 이 뷰가 화면 크기가 된 뒤로 미룬다 (attachWhenSized)
 
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
         doubleTap.numberOfTapsRequired = 2
@@ -112,6 +112,30 @@ final class PlayerSurfaceView: UIView, UIGestureRecognizerDelegate {
         videoView.bounds = CGRect(origin: .zero, size: bounds.size)
         videoView.center = CGPoint(x: bounds.midX, y: bounds.midY)
         applyZoom()
+        attachWhenSized()
+    }
+
+    /// 바뀜 (2026-11-28, 사용자: 고친 뒤에도 작은 화면이 아주 잠깐 보였다가 자리 잡음): 플레이어가 뜰 때 이 뷰는 작게(예: 765×91)
+    /// 시작해 0.3초쯤 걸려 화면 크기가 된다. 그동안 VLC 에 영상 뷰를 넘기면 VLC 가 영상 출력을 작은 크기로 만들어,
+    /// 뷰가 커진 뒤에도 처음 몇 장면을 작게 그린다. 그래서 이 뷰가 창 크기가 된 다음에 넘겨 재생을 시작한다.
+    /// 창 크기가 안 되는 경우를 대비해 창에 붙고 0.6초가 지나면 그냥 넘긴다.
+    private var attached = false
+
+    private func attachWhenSized(force: Bool = false) {
+        guard !attached, let window else { return }
+        let fills = bounds.width >= window.bounds.width - 1 && bounds.height >= window.bounds.height - 1
+        guard fills || force else { return }
+        attached = true
+        model.attach(to: videoView)
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window != nil, !attached else { return }
+        attachWhenSized()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+            self?.attachWhenSized(force: true)
+        }
     }
 
     /// 바뀜 (2026-11-28, 사용자: 기기 안 영상이 가로에서 1~2초 작게 나왔다 커짐): 플레이어가 뜨며 이 뷰가 작게 시작해 커지는데,
