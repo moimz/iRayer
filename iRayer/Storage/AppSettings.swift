@@ -98,6 +98,11 @@ final class AppSettings {
         didSet { defaults.set(ambientLetterbox, forKey: Keys.ambientLetterbox) }
     }
 
+    /// 재생 화면에 디버그 정보(연결·받는 속도·버퍼·VLC 상태) 보이기 (2026-11-28, 사용자: 느리거나 NAS 가 시끄러울 때 보려고)
+    var playerDebugInfo: Bool {
+        didSet { defaults.set(playerDebugInfo, forKey: Keys.playerDebugInfo) }
+    }
+
     /// 자막 글꼴 (앱이 그리는 자막 + VLC 가 그리는 자막)
     var subtitleFont: SubtitleFont {
         didSet { defaults.set(subtitleFont.rawValue, forKey: Keys.subtitleFont) }
@@ -194,6 +199,7 @@ final class AppSettings {
         networkBufferSeconds = defaults.integer(forKey: Keys.networkBufferSeconds)
         keepScreenOn = defaults.bool(forKey: Keys.keepScreenOn)
         ambientLetterbox = defaults.bool(forKey: Keys.ambientLetterbox)
+        playerDebugInfo = defaults.bool(forKey: Keys.playerDebugInfo)
         subtitleFont = defaults.string(forKey: Keys.subtitleFont).flatMap(SubtitleFont.init) ?? .system
         subtitleScale = defaults.double(forKey: Keys.subtitleScale)
         comicAutoSeconds = defaults.integer(forKey: Keys.comicAutoSeconds)
@@ -216,6 +222,7 @@ final class AppSettings {
         static let networkBufferSeconds = "networkBufferSeconds"
         static let keepScreenOn = "keepScreenOn"
         static let ambientLetterbox = "ambientLetterbox"
+        static let playerDebugInfo = "playerDebugInfo"
         static let subtitleFont = "subtitleFont"
         static let subtitleScale = "subtitleScale"
         static let subtitleEdge = "subtitleEdge"

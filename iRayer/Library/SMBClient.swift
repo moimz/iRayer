@@ -15,6 +15,8 @@ actor SMBClient {
 
     /// 서버·공유 폴더별로 연결을 재사용한다 (폴더를 옮길 때마다 로그인하지 않도록)
     private var connections: [String: SMB2Manager] = [:]
+    /// 열어 둔 연결 수 (재생 화면 디버그 정보, 2026-11-28)
+    var connectionCount: Int { connections.count }
 
     func list(_ directory: URL, serverID: UUID?) async throws -> [Entry] {
         let (share, path) = Self.split(directory)

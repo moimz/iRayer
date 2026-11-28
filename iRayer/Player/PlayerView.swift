@@ -73,6 +73,9 @@ struct PlayerView: View {
                     .opacity(model.ambientHidden ? 0 : 1)
                     .animation(model.ambientHidden ? nil : .easeIn(duration: 0.4), value: model.ambientHidden)
             }
+            if !model.debugLines.isEmpty {
+                DebugInfoOverlay(lines: model.debugLines, raised: model.controlsVisible)
+            }
             if external.isConnected {
                 // 영상과 자막은 TV 에 나온다. 폰은 조작용.
                 Label("TV에서 재생 중", systemImage: "tv")
@@ -870,5 +873,30 @@ private struct PlayerStatusOverlay: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: model.hasFirstFrame)
+    }
+}
+
+/// 디버그 정보 (설정 › 디버그 정보 보기, 2026-11-28 사용자). 조작 단추가 보이면 제목·재생 막대 위로 올린다
+private struct DebugInfoOverlay: View {
+    let lines: [String]
+    let raised: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
+                Text(line)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+            }
+        }
+        .font(.system(size: 11, design: .monospaced))
+        .foregroundStyle(.white)
+        .padding(8)
+        .background(.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 8))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+        .padding(.horizontal)
+        .padding(.bottom, raised ? 110 : 12)
+        .allowsHitTesting(false)
+        .animation(.easeInOut(duration: 0.2), value: raised)
     }
 }

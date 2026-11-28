@@ -55,6 +55,16 @@ final class PlayerModel {
     var isBuffering = false
     /// 직접 읽기로 받아 둔 끝 위치 (영상 전체에 대한 비율, 진행바에 옅게 표시). 직접 읽지 않으면 nil.
     var bufferedFraction: Double?
+    /// 버퍼 막대용 바이트→시간 표 (VLC 가 읽어 간 목차로 만든다, ByteTimeline). 없으면 평균 비트레이트로
+    @ObservationIgnored private var timeline: ByteTimeline?
+    @ObservationIgnored private var timelineLoading = false
+    @ObservationIgnored private var timelineAttempts = 0
+    @ObservationIgnored private var timelineAttemptAt = Date.distantPast
+    /// 재생 화면에 띄울 디버그 정보 줄 (설정의 디버그 정보 보기가 켜졌을 때만, 1초마다)
+    var debugLines: [String] = []
+    @ObservationIgnored private var debugSampledAt = Date.distantPast
+    @ObservationIgnored private var debugPrevious: (at: Date, total: Int64, lines: [Int: Int64], vlcRead: Int64)?
+    @ObservationIgnored private var smbSessions: Int?
     /// 재생 자체를 못 함 (화면 가운데 안내 + 다시 시도)
     var playbackError: String?
     /// 화면을 위아래로 끌어 밝기·볼륨을 바꾸는 중 (오른쪽 위에 표시)
@@ -631,7 +641,9 @@ final class PlayerModel {
             if duration == 0 { directReader?.setReadAhead(readAheadBytes(duration: length)) }
             duration = length
         }
+        loadTimelineIfNeeded()
         updateBufferedFraction()
+        updateDebugInfo()
         if player.videoSize != .zero, player.videoSize != videoSize {
             videoSize = player.videoSize
         }
@@ -733,11 +745,94 @@ final class PlayerModel {
         }
     }
 
+    /// VLC 가 목차를 읽은 뒤(첫 장면 뒤) 받아 둔 것에서 바이트→시간 표를 만든다. 못 만들면 몇 번 더 (MKV 는 VLC 가 Cues 를 늦게 읽기도 한다)
+    private func loadTimelineIfNeeded() {
+        guard timeline == nil, !timelineLoading, hasFirstFrame, let reader = directReader, timelineAttempts < 5,
+              Date().timeIntervalSince(timelineAttemptAt) > 3, let kind = ByteTimeline.kind(for: file) else { return }
+        timelineAttempts += 1
+        timelineAttemptAt = Date()
+        timelineLoading = true
+        let size = file.size
+        Task.detached(priority: .utility) { [weak self] in
+            let loaded = await ByteTimeline.load(kind, size: size) { range in
+                guard let data = reader.cached(range) else { throw RemoteAccess.AccessError.unreachable }
+                return data
+            }
+            await MainActor.run {
+                self?.timeline = loaded
+                self?.timelineLoading = false
+            }
+        }
+    }
+
+    /// 디버그 정보 (2026-11-28, 사용자: 예전 NAS 연결이 수백 개 열리던 버그처럼, 느리거나 NAS 가 시끄러울 때 재생 중에 보려고)
+    private func updateDebugInfo() {
+        guard AppSettings.shared.playerDebugInfo else {
+            if !debugLines.isEmpty { debugLines = [] }
+            debugPrevious = nil
+            return
+        }
+        let now = Date()
+        guard now.timeIntervalSince(debugSampledAt) >= 1 else { return }
+        debugSampledAt = now
+        func mb(_ bytes: Int64) -> String {
+            bytes >= 1 << 30 ? String(format: "%.2fGB", Double(bytes) / 1_073_741_824) : String(format: "%.1fMB", Double(bytes) / 1_048_576)
+        }
+        func speed(_ bytes: Int64, _ seconds: Double) -> String {
+            seconds > 0 ? String(format: "%.1fMB/s", Double(max(bytes, 0)) / seconds / 1_048_576) : "-"
+        }
+        var lines: [String] = []
+        let stats = player.media?.statistics
+        if let reader = directReader {
+            let s = reader.stats
+            let elapsed = debugPrevious.map { now.timeIntervalSince($0.at) } ?? 0
+            let active = s.lines.filter(\.active).count
+            var head = "직접 읽기 (\(s.kind)) · 파일 \(mb(s.size)) · 받는 연결 \(active)개 / 줄 \(s.lines.count)개 · 보낸 요청 \(s.requestsStarted)번"
+            if s.kind == "SMB", let smbSessions { head += " · SMB 세션 \(smbSessions)개" }
+            lines.append(head)
+            lines.append("받는 속도 \(speed(s.bytesReceived - (debugPrevious?.total ?? s.bytesReceived), elapsed)) · 받은 양 \(mb(s.bytesReceived)) · 메모리 \(mb(s.cachedBytes)) / 미리 받기 \(mb(s.readAhead))"
+                         + (s.starvedFor > 0.2 ? String(format: " · VLC 기다림 %.1f초", s.starvedFor) : "") + (s.failing ? " · 끊김" : ""))
+            for line in s.lines {
+                let before = debugPrevious?.lines[line.id] ?? line.received
+                lines.append("  줄 \(line.id) \(line.active ? "받는 중" : "쉼") @\(mb(line.next)) (읽은 곳보다 \(mb(max(0, line.next - line.cursor))) 앞) \(speed(line.received - before, elapsed))")
+            }
+            debugPrevious = (now, s.bytesReceived, Dictionary(uniqueKeysWithValues: s.lines.map { ($0.id, $0.received) }), stats.map { Int64($0.readBytes) } ?? 0)
+            let ahead = (bufferedFraction ?? 0) * duration - currentTime
+            let barSource = (interleaveSkew ?? 0) > MP4Interleave.threshold ? "소리·영상 떨어진 파일(평균)" : (timeline?.kind.name ?? "평균 비트레이트")
+            lines.append(String(format: "버퍼 앞으로 %.0f초 (막대: %@)", max(0, ahead), barSource))
+            if s.kind == "SMB" {
+                Task { [weak self] in
+                    let count = await SMBClient.shared.connectionCount
+                    self?.smbSessions = count
+                }
+            }
+        } else {
+            let scheme = file.url.scheme ?? ""
+            lines.append(scheme == "file" ? "기기 안 파일 · \(mb(file.size))" : "VLC 가 직접 받음 (\(scheme)) · \(mb(file.size))")
+            let elapsed = debugPrevious.map { now.timeIntervalSince($0.at) } ?? 0
+            if let stats {
+                let read = Int64(stats.readBytes) - (debugPrevious?.vlcRead ?? Int64(stats.readBytes))
+                lines.append("VLC 읽는 속도 \(speed(read, elapsed)) · 읽은 양 \(mb(Int64(stats.readBytes)))")
+            }
+            debugPrevious = (now, 0, [:], stats.map { Int64($0.readBytes) } ?? 0)
+        }
+        if let stats {
+            let rates = String(format: "VLC 입력 %.0fkb/s · 해석 %.0fkb/s", Double(stats.inputBitrate) * 8000, Double(stats.demuxBitrate) * 8000)
+            lines.append(rates + " · 그린 장면 \(stats.displayedPictures) · 놓친 장면 \(stats.lostPictures) · 깨진 묶음 \(stats.demuxCorrupted)")
+        }
+        lines.append("영상 \(Int(videoSize.width))×\(Int(videoSize.height)) · 하드웨어 디코딩 \(AppSettings.shared.hardwareDecoding ? "켬" : "끔")\(isBuffering ? " · 버퍼링 중" : "")")
+        debugLines = lines
+    }
+
     private func readAheadBytes(duration: Double) -> Int64 {
         Int64(Double(file.size) / duration * Double(AppSettings.shared.networkBufferSeconds))
     }
 
     /// 바뀜 (2026-11-11): 받아 둔 바이트를 평균 비트레이트로 시간으로 바꿔 재생 위치 앞에 붙인다 (소리·영상이 떨어진 파일, 탐색 직후에도 맞게)
+    /// 바뀜 (2026-11-28, 사용자: 앞으로 계속 탐색하다 보면 버퍼 막대가 안 보임): 보통 파일은 받아 둔 끝 바이트를 파일 크기로 나눠 그렸는데,
+    ///   버퍼는 바이트·재생 막대는 시간이라 지나온 부분이 평균보다 가벼운(가변 비트레이트) 영상은 바이트 비율이 시간 비율보다 뒤처져
+    ///   막대가 재생 위치 밑에 묻혔다. 이제 파일 목차(MP4 moov·MKV Cues)로 받아 둔 끝 바이트를 정확한 시각으로 바꾼다.
+    ///   목차가 없는 형식(AVI·TS 등)이나 아직 못 꺼냈으면 받아 둔 양을 평균 비트레이트로 나눈 시간을 재생 위치 앞에 붙인다.
     private func updateBufferedFraction() {
         guard let directReader, file.size > 0, duration > 0 else { return }
         let buffered = directReader.buffered
@@ -745,12 +840,13 @@ final class PlayerModel {
         if let interleaveSkew, interleaveSkew > MP4Interleave.threshold {
             let seconds = Double(buffered.ahead) / (Double(file.size) / duration)
             shown = min(1, (currentTime + seconds) / duration)
+        } else if let timeline {
+            let end = buffered.end >= file.size ? duration : timeline.time(atByte: buffered.end)
+            shown = min(1, max(currentTime, end) / duration)
         } else {
-            // 바뀜 (2026-11-12, 사용자: 앞으로 탐색하면 줄었다 늘고 끝 무렵엔 없었다): 소리·영상이 섞인 보통 파일은
-            //   받아 둔 끝의 바이트 위치를 그대로 (VLC 가 재생 위치보다 앞을 읽어도 막대가 흔들리지 않는다). 재생 위치보다 뒤로는 안 그린다
-            shown = min(1, max(currentTime / duration, Double(buffered.end) / Double(file.size)))
+            let seconds = Double(buffered.ahead) / (Double(file.size) / duration)
+            shown = min(1, (currentTime + seconds) / duration)
         }
-        // 화면을 자주 다시 그리지 않게 조금이라도 바뀔 때만
         if bufferedFraction.map({ abs($0 - shown) > 0.0005 }) ?? true { bufferedFraction = shown }
     }
 

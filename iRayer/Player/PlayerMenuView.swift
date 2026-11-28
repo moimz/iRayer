@@ -91,6 +91,15 @@ struct PlayerMenuView: View {
                     FormHeader("정보")
                 }
             }
+
+            #if os(iOS)
+            // 바뀜 (2026-11-28, 사용자): 느리거나 NAS 가 시끄러울 때 재생 중에 연결·받는 속도 등을 보려고
+            Section {
+                Toggle("디버그 정보 보기", isOn: Bindable(AppSettings.shared).playerDebugInfo)
+            } footer: {
+                Text("재생 화면 아래쪽에 NAS 연결 수, 받는 속도, 버퍼, VLC 상태를 보여 줍니다.")
+            }
+            #endif
         }
         .fileImporter(isPresented: $showSubtitlePicker, allowedContentTypes: [.item]) { result in
             if case .success(let url) = result {

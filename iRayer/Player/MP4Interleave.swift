@@ -31,6 +31,13 @@ nonisolated enum MP4Interleave {
         return worst
     }
 
+    /// 트랙(영상·소리)마다 덩어리의 (파일 위치, 시각) 표. 버퍼 막대의 바이트→시간 표용 (2026-11-28, ByteTimeline)
+    static func chunkTables(size: Int64, read: Reader) async -> [[(offset: Int64, time: Double)]]? {
+        guard let moov = try? await findMoov(size: size, read: read) else { return nil }
+        let tables = parseTracks(moov).map { $0.chunks.map { (offset: $0.offset, time: $0.time) } }.filter { !$0.isEmpty }
+        return tables.isEmpty ? nil : tables
+    }
+
     // MARK: - 목차 찾기
 
     /// 맨 위 상자들을 따라가며 moov 를 찾아 통째로 읽는다 (앞에 있으면 한두 번, 뒤에 있으면 mdat 를 건너뛰어)

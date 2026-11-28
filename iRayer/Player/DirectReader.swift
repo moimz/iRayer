@@ -57,6 +57,9 @@ nonisolated final class DirectReader: NSObject, URLSessionDataDelegate, @uncheck
     private var failingSince: Date?
     /// VLC 가 데이터를 기다리기 시작한 때 (기다리는 중이 아니면 nil)
     private var starvedSince: Date?
+    /// 디버그 정보 (2026-11-28, 사용자: 재생 중 연결·속도를 보려고): 보낸 요청 수, 받은 양
+    private var requestsStarted = 0
+    private var bytesReceived: Int64 = 0
     private lazy var session: URLSession = {
         let configuration = URLSessionConfiguration.default
         // 데이터가 오다 멈추면 기본 60초를 기다리지 않고 다시 연결한다
@@ -89,6 +92,8 @@ nonisolated final class DirectReader: NSObject, URLSessionDataDelegate, @uncheck
         var generation = 0
         var lastUsed = Date()
         var retryAt = Date.distantPast
+        /// 이 줄이 받은 양 (디버그 정보: 줄마다 속도)
+        var received: Int64 = 0
         init(id: Int, at offset: Int64) {
             self.id = id
             origin = offset
@@ -191,6 +196,59 @@ nonisolated final class DirectReader: NSObject, URLSessionDataDelegate, @uncheck
         }
         logStatus(ahead: ahead)
         return (ahead, end)
+    }
+
+    /// 디버그 정보에 보일 지금 상태 (2026-11-28)
+    struct Stats: Sendable {
+        struct Line: Sendable {
+            let id: Int
+            let active: Bool
+            /// 다음에 받을 곳, VLC 가 읽은 곳 (바이트)
+            let next: Int64
+            let cursor: Int64
+            let received: Int64
+        }
+        let kind: String
+        let size: Int64
+        let requestsStarted: Int
+        let bytesReceived: Int64
+        let cachedBytes: Int64
+        let readAhead: Int64
+        let starvedFor: TimeInterval
+        let failing: Bool
+        let lines: [Line]
+    }
+
+    var stats: Stats {
+        condition.lock()
+        defer { condition.unlock() }
+        return Stats(
+            kind: source.kind, size: size, requestsStarted: requestsStarted, bytesReceived: bytesReceived,
+            cachedBytes: blocks.values.reduce(0) { $0 + Int64($1.count) }, readAhead: readAhead,
+            starvedFor: starvedSince.map { Date().timeIntervalSince($0) } ?? 0,
+            failing: failingSince != nil || failed,
+            lines: fetchers.map { Stats.Line(id: $0.id, active: $0.active, next: $0.next, cursor: $0.cursor, received: $0.received) }
+        )
+    }
+
+    /// 받아 둔 범위를 그대로 꺼낸다 (모두 받아 두었을 때만). VLC 가 읽고 간 목차(MP4 moov·MKV Cues)를
+    /// NAS 에 다시 요청하지 않고 버퍼 막대용 바이트→시간 표로 쓰려고 (2026-11-28, ByteTimeline)
+    func cached(_ range: Range<Int64>) -> Data? {
+        condition.lock()
+        defer { condition.unlock() }
+        guard range.lowerBound >= 0, range.upperBound <= size, !range.isEmpty else { return nil }
+        var out = Data(capacity: range.count)
+        var offset = range.lowerBound
+        while offset < range.upperBound {
+            let index = offset / Self.blockSize
+            guard let block = blocks[index] else { return nil }
+            let inner = Int(offset - index * Self.blockSize)
+            let length = min(block.count - inner, Int(range.upperBound - offset))
+            guard length > 0 else { return nil }
+            out.append(block[block.startIndex + inner..<block.startIndex + inner + length])
+            offset += Int64(length)
+        }
+        return out
     }
 
     /// VLC 가 데이터를 기다린 시간 (기다리는 중이 아니면 0). 로딩 표시용.
@@ -345,6 +403,8 @@ nonisolated final class DirectReader: NSObject, URLSessionDataDelegate, @uncheck
 
     /// 받은 것을 줄에 쌓는다. 블록이 차면 블록으로 옮기고, 이미 받아 둔 블록에 닿으면 그 줄을 멈춘다
     private func append(_ chunk: Data, to fetcher: Fetcher) {
+        bytesReceived += Int64(chunk.count)
+        fetcher.received += Int64(chunk.count)
         var rest = chunk[...]
         while !rest.isEmpty {
             let index = fetcher.pendingStart / Self.blockSize
@@ -439,6 +499,7 @@ nonisolated final class DirectReader: NSObject, URLSessionDataDelegate, @uncheck
         // 닫은 뒤에는 새로 받지 않는다 (닫은 세션에 작업을 만들면 앱이 죽는다)
         guard !cancelled else { return }
         fetcher.active = true
+        requestsStarted += 1
         fetcher.generation += 1
         let generation = fetcher.generation
         let offset = fetcher.next
